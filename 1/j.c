@@ -84,7 +84,7 @@ int main() {
   } while (norm(x, y, n) > tol);
 
   for (int j=0; j<n; j++){
-    printf("x[%d] = %f\n", j, x[j]);
+    printf("x[%d] = %.10f\n", j, x[j]);
   }
 
 }
