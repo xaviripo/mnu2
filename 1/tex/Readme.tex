@@ -1,0 +1,66 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[catalan]{babel}
+
+\usepackage{amsmath}
+
+\title{Exercici 26}
+
+\begin{document}
+
+\section{Resolució del problema}
+
+\renewcommand{\thesubsection}{\alph{subsection}}
+
+\subsection{Acotació de les normes de les matrius d'iteració}
+
+La norma de $B_J$ es pot calcular explícitament:
+
+\begin{equation*}
+\left(\begin{matrix}
+    x_{11} & x_{12} & x_{13} & \dots  & x_{1n} \\
+    x_{21} & x_{22} & x_{23} & \dots  & x_{2n} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    x_{d1} & x_{d2} & x_{d3} & \dots  & x_{dn}
+\end{matrix}\right)
+\end{equation*}
+
+\begin{equation*}
+D^{-1}=
+\left(\begin{matrix}
+    3       & 0       & \dots   & 0       \\
+    0       & 4       & \dots   & 0       \\
+    \vdots  & \vdots  & \ddots  & \vdots  \\
+    0       & 0       & \dots   & 4
+\end{matrix}\right)^{-1}=
+\left(\begin{matrix}
+    1/3     & 0       & \dots   & 0       \\
+    0       & 1/4     & \dots   & 0       \\
+    \vdots  & \vdots  & \ddots  & \vdots  \\
+    0       & 0       & \dots   & 1/4
+\end{matrix}\right)
+\end{equation*}
+
+\section{Estructura del programa}
+El programa està separat en tres fitxers:
+
+\begin{description}
+\item [\texttt{jacobi.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de Jacobi.
+\item [\texttt{gs.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de Gauss-Seidel.
+\item [\texttt{sor.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de SOR. A més a més, conté la funció que s'ha utilitzat per trobar
+  el valor òptim de la constant de SOR $\omega$.
+\end{description}
+
+Cada programa retorna per la sortida estàndard totes les components del vector
+$x$, en ordre, una per línia.
+
+S'inclou un \texttt{Makefile}. Dins del mateix s'explica cada instrucció.
+En particular, la instrucció per defecte (\texttt{make}) genera els tres
+programes, els executa, i emmagatzema les sortides en fitxers de text per
+poder-les comparar.
+
+\end{document}
