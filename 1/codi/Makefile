@@ -29,5 +29,6 @@ clean:
 purge:
 	rm -f *.exe *.o jacobi.txt gs.txt sor.txt
 
+# Compila els fitxers font a fitxers objecte
 %.o: %.c
 	$(CC) -c -o $@ $<

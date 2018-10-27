@@ -2,9 +2,19 @@
 
 #include "common.c"
 
-int gs(double *x, double *y, int n) {
+// Size of the vectors, established by the problem statement.
+#define N 1000000
 
-  // TODO establish actual tol needed
+int jacobi(double *x, double *y, int n) {
+
+  // Error, established by the problem statement.
+  // By a proposition, we know that the error to the actual solution is
+  // smaller than or equal to the error between two iterations multiplied
+  // by \beta/(1+\beta), where \beta is the norm of the B matrix.
+  // This norm has been calculated to be 2/3 in the previous point.
+  // Then, the error to the actual solution is lower than or equal to
+  // twice the error between iterations, so we take 1/2 of the given
+  // tolerance, or 0.5e-12 = 5e-13
   const double tol = 5e-13;
 
   // To ease notation and calculation.
@@ -39,12 +49,12 @@ int gs(double *x, double *y, int n) {
 
     // 2. We calculate x_2 through x_{n-3}.
     for (int j = 2; j < n-2; j++) {
-      y[j] = (j%2 ? f : t)*(y[j-2] + x[j+2] + i*(j+2-(j%2)));
+      y[j] = (j%2 ? f : t)*(x[j-2] + x[j+2] + i*(j+2-(j%2)));
     }
 
     // 3. We calculate x_{n-2} and x_{n-1}.
-    y[n-2] = t*(x[n-4]-y[0]+1);
-    y[n-1] = f*(x[n-3]-y[1]+1);
+    y[n-2] = t*(x[n-4]-x[0]+1);
+    y[n-1] = f*(x[n-3]-x[1]+1);
 
     // We've finished calculating the next iteration of x.
     // Now we calculate the norm of the difference between this iteration (x)
@@ -57,19 +67,19 @@ int gs(double *x, double *y, int n) {
 
 int main() {
 
-  // Size of the vectors, established by the problem statement.
-  const int n = 1e+6;
-
   // To store the solution in.
-  static double x[n] = {0.};
+  static double x[N] = {0.};
 
   // Here we'll store the next iteration of x and then we'll copy it over x again.
-  static double y[n] = {0.};
+  static double y[N] = {0.};
 
-  gs(x, y, n);
+  int it = jacobi(x, y, N);
 
-  for (int j = 0; j < n; j++){
+  for (int j = 0; j < N; j++){
     printf("%.12f\n", x[j]);
   }
+
+  // To see the number of iterations
+  //printf("%d", it);
 
 }

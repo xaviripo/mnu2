@@ -1,0 +1,159 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[catalan]{babel}
+
+\usepackage{amsmath}
+\usepackage{xfrac}
+
+\newcommand{\T}{\sfrac{1}{3}} % 1/3
+\newcommand{\F}{\sfrac{1}{4}} % 1/4
+\newcommand{\NH}{\sfrac{n}{2}} % n/2
+
+\title{Exercici 26}
+
+\begin{document}
+
+\section{Resolució del problema}
+
+\renewcommand{\thesubsection}{\alph{subsection}}
+
+\subsection{Acotació de les normes de les matrius d'iteració}
+
+La norma de $B_J$ es pot calcular explícitament:
+
+\begin{equation*}
+D^{-1}=
+\begin{pmatrix}
+    3       & 0       & \dots   & 0       \\
+    0       & 4       & \ddots  & 0       \\
+    \vdots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & \dots   & 4
+\end{pmatrix}^{-1}=
+\begin{pmatrix}
+    \T      & 0       & \dots   & 0       \\
+    0       & \F      & \ddots  & 0       \\
+    \vdots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & \dots   & \F
+\end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+L+U=
+\begin{pmatrix}
+    0       & 0       & -1      & 0       & \dots   & 0       & 0       & 1       & 0       \\
+    0       & 0       & 0       & -1      & \ddots  & 0       & 0       & 0       & 1       \\
+    -1      & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    0       & -1      & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    \vdots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & -1      & 0       \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & -1      \\
+    1       & 0       & 0       & 0       & \ddots  & -1      & 0       & 0       & 0       \\
+    0       & 1       & 0       & 0       & \dots   & 0       & -1      & 0       & 0
+\end{pmatrix}
+\end{equation*}
+
+\begin{align*}
+\begin{gathered}
+-D^{-1}(L+U)=\\\\
+=-\begin{pmatrix}
+    \T      & 0       & \dots   & 0       \\
+    0       & \F      & \ddots  & 0       \\
+    \vdots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & \dots   & \F
+\end{pmatrix}
+\begin{pmatrix}
+    0       & 0       & -1      & 0       & \dots   & 0       & 0       & 1       & 0       \\
+    0       & 0       & 0       & -1      & \ddots  & 0       & 0       & 0       & 1       \\
+    -1      & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    0       & -1      & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    \vdots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & -1      & 0       \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & -1      \\
+    1       & 0       & 0       & 0       & \ddots  & -1      & 0       & 0       & 0       \\
+    0       & 1       & 0       & 0       & \dots   & 0       & -1      & 0       & 0
+\end{pmatrix}=\\\\
+=\begin{pmatrix}
+    0       & 0       & \T      & 0       & \dots   & 0       & 0       & -\T     & 0       \\
+    0       & 0       & 0       & \F      & \ddots  & 0       & 0       & 0       & -\F     \\
+    \T      & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    0       & \F      & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    \vdots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & \T      & 0       \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & 0       & 0       & \F      \\
+    -\T     & 0       & 0       & 0       & \ddots  & \T      & 0       & 0       & 0       \\
+    0       & -\F     & 0       & 0       & \dots   & 0       & \F      & 0       & 0
+\end{pmatrix}
+\end{gathered}
+\end{align*}
+
+Per tant,
+$\left\lVert D^{-1}(L+U)\right\rVert_\infty
+=\max{\{\sfrac{2}{3},\sfrac{2}{4},\sfrac{2}{3},\sfrac{2}{4},\dots\}}
+=\sfrac{2}{3}
+<1$.
+\\\\
+Similarment, podem calcular $B_{GS}$ i acotar-ne la norma:
+
+\begin{equation*}
+(D+L)^{-1}=
+\begin{pmatrix}
+    \T      & 0       & 0       & 0       & \dots   & 0       & 0       & 0       & 0       \\
+    0       & \F      & 0       & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    \T^2    & 0       & \T      & 0       & \ddots  & 0       & 0       & 0       & 0       \\
+    0       & \F^2    & 0       & \F      & \ddots  & 0       & 0       & 0       & 0       \\
+    \vdots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \ddots  & \vdots  \\
+    0       & 0       & 0       & 0       & \ddots  & \T      & 0       & 0       & 0       \\
+    0       & 0       & 0       & 0       & \ddots  & 0       & \F      & 0       & 0       \\
+    \T^{\NH}& 0       & 0       & 0       & \ddots  & \T^2    & 0       & \T      & 0       \\
+    0       & \F^{\NH}& 0       & 0       & \dots   & 0       & \F^2    & 0       & \F
+\end{pmatrix}
+\end{equation*}
+
+Per altra banda, la matriu $U$ té norma infinit $2$.
+
+Per tant,
+
+\begin{equation*}
+\left\lVert (D+L)^{-1}U\right\rVert_\infty
+\leq\left\lVert (D+L)^{-1}\right\rVert_\infty \left\lVert U\right\rVert_\infty
+=2\sum_{i=1}^{\NH}{\T^i}
+<2\sum_{i=1}^{\infty}{\T^i}
+=2\sfrac{1}{2}
+=1
+\end{equation*}
+
+és a dir, el mètode convergeix.
+
+\subsection{Resolució del sistema}
+
+Les solucions del sistema donades pels tres mètodes estan emmagatzemades als fitxers
+\texttt{jacobi.txt}, \texttt{gs.txt} i \texttt{sor.txt}, on cada fila es correspon
+amb una entrada del vector solució.
+
+El valor òptim de la constant $\omega$ que s'ha trobat és $1.2$.
+Amb aquesta $\omega$, SOR resol el sistema en 34 iteracions, en comptes de les 41
+que necessita Gauss-Seidel.
+
+\section{Estructura del programa}
+El programa està separat en tres fitxers:
+
+\begin{description}
+\item [\texttt{jacobi.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de Jacobi.
+\item [\texttt{gs.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de Gauss-Seidel.
+\item [\texttt{sor.c}] conté el codi per resoldre el sistema mitjançant el
+  mètode de SOR. A més a més, conté la funció que s'ha utilitzat per trobar
+  el valor òptim de la constant de SOR $\omega$.
+\end{description}
+
+Cada programa retorna per la sortida estàndard totes les components del vector
+$x$, en ordre, una per línia.
+
+S'inclou un \texttt{Makefile}. Dins del mateix s'explica cada instrucció.
+En particular, la instrucció per defecte (\texttt{make}) genera els tres
+programes, els executa, i emmagatzema les sortides en fitxers de text per
+poder-les comparar.
+
+\end{document}

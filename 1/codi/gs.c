@@ -2,9 +2,11 @@
 
 #include "common.c"
 
-int sor(double *x, double *y, int n, double w) {
+// Size of the vectors, established by the problem statement.
+#define N 1000000
 
-  // TODO establish actual tol needed
+int gs(double *x, double *y, int n) {
+
   const double tol = 5e-13;
 
   // To ease notation and calculation.
@@ -39,7 +41,7 @@ int sor(double *x, double *y, int n, double w) {
 
     // 2. We calculate x_2 through x_{n-3}.
     for (int j = 2; j < n-2; j++) {
-      y[j] = x[j] + w*(j%2 ? f : t)*(y[j-2] - (j%2 ? 4 : 3)*x[j] + x[j+2] + i*(j+2-(j%2)));
+      y[j] = (j%2 ? f : t)*(y[j-2] + x[j+2] + i*(j+2-(j%2)));
     }
 
     // 3. We calculate x_{n-2} and x_{n-1}.
@@ -55,62 +57,21 @@ int sor(double *x, double *y, int n, double w) {
 
 }
 
-// Try with different values for w and return the best one
-double find_w(double *x, double *y, int n) {
-
-  double w = 0.;
-  double w_best = 0.;
-
-  unsigned int it = 0;
-  unsigned int it_best = -1;
-
-  const double w_min = 0.1;
-  const double w_max = 2.;
-  const double w_step = 0.1;
-
-  for (w = w_min; w < w_max; w += w_step) {
-
-    for (int j = 0; j < n; j++) {
-      x[j] = 0.;
-      y[j] = 0.;
-    }
-
-    it = sor(x, y, n, w);
-    if (it < it_best) {
-      it_best = it;
-      w_best = w;
-    }
-
-  }
-
-  // Clean the vectors one last time
-  for (int j = 0; j < n; j++) {
-    x[j] = 0.;
-    y[j] = 0.;
-  }
-
-  return w_best;
-
-}
-
 int main() {
 
-  // Size of the vectors, established by the problem statement.
-  const int n = 1e+6;
-
   // To store the solution in.
-  static double x[n] = {0.};
+  static double x[N] = {0.};
 
   // Here we'll store the next iteration of x and then we'll copy it over x again.
-  static double y[n] = {0.};
+  static double y[N] = {0.};
 
-  // SOR constant; best value found experimentally to be 1.2
-  double w = 1.2; // = find_w(x, y, n);
+  int it = gs(x, y, N);
 
-  sor(x, y, n, w);
-
-  for (int j=0; j<n; j++){
+  for (int j = 0; j < N; j++){
     printf("%.12f\n", x[j]);
   }
+
+  // To see the number of iterations
+  //printf("%d", it);
 
 }

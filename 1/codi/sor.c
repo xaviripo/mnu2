@@ -2,16 +2,11 @@
 
 #include "common.c"
 
-int jacobi(double *x, double *y, int n) {
+// Size of the vectors, established by the problem statement.
+#define N 1000000
 
-  // Error, established by the problem statement.
-  // By a proposition, we know that the error to the actual solution is
-  // smaller or equal to the error between two iterations multiplied by
-  // \beta/(1+\beta), where \beta is the norm of the B matrix.
-  // This norm has been calculated to be 2/3 in the previous point.
-  // Then, the error to the actual solution is lower or equal than twice
-  // the error between iterations, so we take 1/2 of the given tolerance,
-  // or 0.5e-12 = 5e-13
+int sor(double *x, double *y, int n, double w) {
+
   const double tol = 5e-13;
 
   // To ease notation and calculation.
@@ -46,12 +41,12 @@ int jacobi(double *x, double *y, int n) {
 
     // 2. We calculate x_2 through x_{n-3}.
     for (int j = 2; j < n-2; j++) {
-      y[j] = (j%2 ? f : t)*(x[j-2] + x[j+2] + i*(j+2-(j%2)));
+      y[j] = x[j] + w*(j%2 ? f : t)*(y[j-2] - (j%2 ? 4 : 3)*x[j] + x[j+2] + i*(j+2-(j%2)));
     }
 
     // 3. We calculate x_{n-2} and x_{n-1}.
-    y[n-2] = t*(x[n-4]-x[0]+1);
-    y[n-1] = f*(x[n-3]-x[1]+1);
+    y[n-2] = t*(x[n-4]-y[0]+1);
+    y[n-1] = f*(x[n-3]-y[1]+1);
 
     // We've finished calculating the next iteration of x.
     // Now we calculate the norm of the difference between this iteration (x)
@@ -62,21 +57,62 @@ int jacobi(double *x, double *y, int n) {
 
 }
 
+// Try with different values for w and return the best one
+double find_w(double *x, double *y, int n) {
+
+  double w = 0.;
+  double w_best = 0.;
+
+  unsigned int it = 0;
+  unsigned int it_best = -1;
+
+  const double w_min = 0.1;
+  const double w_max = 2.;
+  const double w_step = 0.1;
+
+  for (w = w_min; w < w_max; w += w_step) {
+
+    for (int j = 0; j < n; j++) {
+      x[j] = 0.;
+      y[j] = 0.;
+    }
+
+    it = sor(x, y, n, w);
+    if (it < it_best) {
+      it_best = it;
+      w_best = w;
+    }
+
+  }
+
+  // Clean the vectors one last time
+  for (int j = 0; j < n; j++) {
+    x[j] = 0.;
+    y[j] = 0.;
+  }
+
+  return w_best;
+
+}
+
 int main() {
 
-  // Size of the vectors, established by the problem statement.
-  const int n = 1e+6;
-
   // To store the solution in.
-  static double x[n] = {0.};
+  static double x[N] = {0.};
 
   // Here we'll store the next iteration of x and then we'll copy it over x again.
-  static double y[n] = {0.};
+  static double y[N] = {0.};
 
-  jacobi(x, y, n);
+  // SOR constant; best value found experimentally to be 1.2
+  double w = 1.2; // = find_w(x, y, n);
 
-  for (int j = 0; j < n; j++){
+  int it = sor(x, y, N, w);
+
+  for (int j = 0; j < N; j++){
     printf("%.12f\n", x[j]);
   }
+
+  // To see the number of iterations
+  //printf("%d", it);
 
 }
