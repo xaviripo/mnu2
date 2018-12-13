@@ -7,6 +7,14 @@ typedef struct v2 {
     double y;
 } v2;
 
+double norm(v2 a) {
+    return pow(pow(a.x, 2.) + pow(a.y, 2.), .5);
+}
+
+double distance(v2 a, v2 b) {
+    return pow(pow(a.x - b.x, 2.) + pow(a.y - b.y, 2.), .5);
+}
+
 double f(double x, double y) {
   return +1*x*x*x*x +
     +2*x*x*x*y +
@@ -74,6 +82,10 @@ v2 get_next_point(v2 point, v2 vect, double dis, double tol) {
     point_next.x = point.x + vect.x;
     point_next.y = point.y + vect.y;
 
+    v2 point_init;
+    point_init.x = point.x;
+    point_init.y = point.y;
+
     double dissqr = dis*dis;
     double
         f_xy,   // f(x,y)
@@ -87,19 +99,26 @@ v2 get_next_point(v2 point, v2 vect, double dis, double tol) {
 
     do {
 
+        printf("\tNext point: (%f, %f)\n", point_next.x, point_next.y);
+
         point = point_next;
 
         // F(x,y)
-        f_xy = f(point_next.x, point_next.y);
-        g_xy = pow(point_next.x - point.x, 2.) + pow(point_next.y - point.y, 2.) - dissqr;
+        f_xy = f(point.x, point.y);
+        g_xy = pow(point.x - point_init.x, 2.) + pow(point.y - point_init.y, 2.) - dissqr;
 
         // (grad F)(x,y)
-        df_xy = grad_f(point_next.x, point_next.y);
+        df_xy = grad_f(point.x, point.y);
         df_x = df_xy.x;
         df_y = df_xy.y;
-        dg_x = 2*(point_next.x - point.x);
-        dg_y = 2*(point_next.y - point.y);
+        dg_x = 2*(point.x - point_init.x);
+        dg_y = 2*(point.y - point_init.y);
         scalar = -1./(df_x*dg_y - df_y*dg_x);
+        printf("\tdf_x: %f\n", df_x);
+        printf("\tdg_y: %f\n", dg_y);
+        printf("\tdf_y: %f\n", df_y);
+        printf("\tdg_x: %f\n", dg_x);
+        printf("\tScalar: %f\n", scalar);
 
         point_next.x = point.x - scalar*(dg_y*f_xy - df_y*g_xy);
         point_next.y = point.y - scalar*(-dg_x*f_xy + df_x*g_xy);
@@ -130,26 +149,56 @@ void get_list_points() {
 
     fprintf(f, "%f %f\n", point_next.x, point_next.y);
 
-    double norm;
+    double vect_norm;
 
+    int i = 0;
     do {
+        printf("-------- ITERATION %d --------\n", ++i);
+
+        // Update point and vector from previous iteration
+        printf("Update point and vector from previous iteration\n");
         point = point_next;
         vect = vect_next;
+        printf("\tPoint: (%f, %f)\n", point.x, point.y);
+        printf("\tVector: (%f, %f)\n", vect.x, vect.y);
+
+        // Calculate next initial approximation
+        printf("Calculate next initial approximation\n");
         grad = grad_f(point.x, point.y);
+        printf("\tGradient: (%f, %f)\n", grad.x, grad.y);
         vect_next = (v2) {-grad.y, grad.x};
-        norm = pow(pow(vect_next.x, 2.) + pow(vect_next.y, 2.), .5);
-        vect_next.x = dis*vect_next.x/norm;
-        vect_next.y = dis*vect_next.y/norm;
+
+        // Change it to length dis
+        printf("Change it to length dis\n");
+        printf("\tPre-normalized vector: (%f, %f)\n", vect_next.x, vect_next.y);
+        vect_norm = norm(vect_next);
+        vect_next.x = dis*vect_next.x/vect_norm;
+        vect_next.y = dis*vect_next.y/vect_norm;
+
+        // Make sure it's got the correct direction
+        printf("Make sure it's got the correct direction\n");
+        printf("\tOld direction: (%f, %f)\n", vect_next.x, vect_next.y);
         if (vect.x*vect_next.x + vect.y*vect_next.y < 0) {
             vect_next.x = -vect_next.x;
             vect_next.y = -vect_next.y;
         }
+        printf("\tNew direction: (%f, %f)\n", vect_next.x, vect_next.y);
+
+        // Get the next point
+        printf("Get the next point\n");
         point_next = get_next_point(point, vect_next, dis, tol);
+        printf("\tPoint next: (%f, %f)\n", point_next.x, point_next.y);
 
         fprintf(f, "%f %f\n", point_next.x, point_next.y);
 
-    } while (pow(point_init.x - point_next.x, 2.) + pow(point_init.y - point_next.y, 2.) > dis);
+    } while (distance(point_init, point_next) > dis);
 
     fclose(f);
 
+}
+
+int main() {
+  printf("\x1B[36m");
+  get_list_points();
+  printf("\x1B[0m");
 }
