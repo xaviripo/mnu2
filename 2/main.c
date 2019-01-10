@@ -156,7 +156,7 @@ void get_list_points() {
 
   v2 grad, vect, vect_next;
 
-  fprintf(f, "%f %f\n", point_next.x, point_next.y);
+  fprintf(f, "%.10f %.10f\n", point_next.x, point_next.y);
 
   double vect_norm;
 
@@ -199,7 +199,7 @@ void get_list_points() {
     point_next = get_next_point(point, vect_next, dis, tol);
     debug("\tPoint next: (%g, %g)\n", point_next.x, point_next.y);
 
-    fprintf(f, "%f %f\n", point_next.x, point_next.y);
+    fprintf(f, "%.10f %.10f\n", point_next.x, point_next.y);
 
   } while (distance(point_init, point_next) > dis);
 
